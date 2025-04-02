@@ -1,4 +1,4 @@
-use std::io::{self, Write};
+use std::io;
 
 fn main() {
     let riddle = "I am the beginning of the end, and the end of time and space. I am essential to creation, and I surround every place. What am I?";
@@ -7,20 +7,16 @@ fn main() {
 
     loop {
         println!("{}", riddle);
-        print!("What is your answer? ");
-        io::stdout().flush().unwrap();
-
+        
         let mut response = String::new();
         io::stdin().read_line(&mut response).unwrap();
         let response = response.trim();
-
+        
         trials += 1;
-
-        if response.eq_ignore_ascii_case(answer) {
+        
+        if response.eq_ignore_ascii_case(answer) || response.eq_ignore_ascii_case("e") {
             println!("Number of trials: {}", trials);
             break;
-        } else {
-            println!("Sorry, that is not the answer. Please try again.");
         }
     }
 }
