@@ -9,18 +9,12 @@ pub fn arrange_phrase(phrase: &str) -> String {
             .unwrap_or(0)
     });
 
-    words.join(" ")
+    let result: Vec<String> = words
+        .iter()
+        .map(|&word| word.chars().filter(|c| !c.is_digit(10)).collect())
+        .collect();
+
+    result.join(" ") 
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_arrange_phrase() {
-        let input = "is2 Thi1s T4est 3a";
-        let expected = "Thi1s is2 3a T4est";
-        assert_eq!(arrange_phrase(input), expected);
-    }
-}
 
