@@ -5,7 +5,6 @@ pub fn arrange_phrase(phrase: &str) -> String {
         word.chars()
             .filter(|c| c.is_digit(10))
             .collect::<String>()
-            
             .parse::<usize>()
             .unwrap_or(0)
     });
