@@ -27,19 +27,19 @@ mod tests {
     #[test]
     fn test_sum() {
         assert_eq!(sum(100, 30), 130);
-        assert_eq!(sum(30, 150), 180); // Clamped at 180
+        assert_eq!(sum(30, 150), 180);
     }
 
     #[test]
     fn test_diff() {
         assert_eq!(diff(234, 2), 232);
-        assert_eq!(diff(10, 20), -10); // Clamped at 0
+        assert_eq!(diff(10, 20), -10);
     }
 
     #[test]
     fn test_pro() {
         assert_eq!(pro(10, 10), 100);
-        assert_eq!(pro(11, 2), 22); // Clamped at 22
+        assert_eq!(pro(11, 2), 22);
     }
 
     #[test]
