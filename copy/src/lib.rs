@@ -1,7 +1,7 @@
 use std::f64;
 
 pub fn nbr_function(c: i32) -> (i32, f64, f64) {
-    (c, (c as f64).exp(), (c as f64).ln())
+    (c, (c as f64).exp(), (c.abs() as f64).ln())
 }
 
 pub fn str_function(a: String) -> (String, String) {
@@ -17,7 +17,7 @@ pub fn str_function(a: String) -> (String, String) {
 pub fn vec_function(b: Vec<i32>) -> (Vec<i32>, Vec<f64>) {
     let log_values = b
         .iter()
-        .map(|&x| (x.abs() as f64).ln()) // Compute ln() of absolute values
+        .map(|&x| (x.abs() as f64).ln())
         .collect();
 
     (b, log_values)
