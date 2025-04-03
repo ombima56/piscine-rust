@@ -9,12 +9,12 @@ pub fn arrange_phrase(phrase: &str) -> String {
             .unwrap_or(0)
     });
 
-    let result: Vec<String> = words
+    words
         .iter()
-        .map(|&word| word.chars().filter(|c| !c.is_digit(10)).collect())
-        .collect();
-
-    result.join(" ") 
+        .map(|&word| {
+            word.chars().filter(|c| !c.is_digit(10)).collect::<String>()
+        })
+        .collect::<Vec<String>>()
+        .join(" ")
 }
-
 
