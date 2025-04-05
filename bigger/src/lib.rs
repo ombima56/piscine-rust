@@ -1,4 +1,3 @@
-// Create a function named bigger that gets the biggest positive number in the HashMap.
 pub fn bigger(h: HashMap<&str, i32>) -> i32 {
     *h.values().max().unwrap_or(&i32::MIN) // Get the maximum value, return MIN if HashMap is empty
 }

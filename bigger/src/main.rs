@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 fn main() {
     let hash = HashMap::from_iter([
         ("Daniel", 122),
