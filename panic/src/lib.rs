@@ -18,8 +18,6 @@ fn test_open_file() {
     open_file(filename);
 
     assert!(std::fs::metadata(filename).is_ok());
-
     std::fs::remove_file(filename).unwrap();
 }
-
 
