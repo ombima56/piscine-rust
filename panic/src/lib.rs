@@ -1,9 +1,11 @@
 use std::fs::File;
 
-File::open(s).unwrap_or_else(|_| {
-    println!("File not found: {}, creating it...", s);
-    File::create(s).unwrap()
-})
+pub fn open_file(s: &str) -> File {
+    File::open(s).unwrap_or_else(|_| {
+        println!("File not found: {}, creating it...", s);
+        File::create(s).unwrap()
+    })
+}
 
 #[test]
 fn test_open_file() {
