@@ -2,8 +2,7 @@ use std::fs::File;
 
 pub fn open_file(s: &str) -> File {
     File::open(s).unwrap_or_else(|_| {
-        println!("File not found: {}, creating it...", s);
-        File::create(s).unwrap()
+        panic!("File not found: {}", s);
     })
 }
 
@@ -15,9 +14,10 @@ fn test_open_file() {
         std::fs::remove_file(filename).unwrap();
     }
 
-    open_file(filename);
+    let result = std::panic::catch_unwind(|| {
+        open_file(filename);
+    });
 
-    assert!(std::fs::metadata(filename).is_ok());
-    std::fs::remove_file(filename).unwrap();
+    assert!(result.is_err());
 }
 
