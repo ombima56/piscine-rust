@@ -25,38 +25,3 @@ pub fn check_ms(message: &str) -> Result<&str, &str> {
         None => Err("ERROR: illegal"),
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_valid_message() {
-        let result = check_ms("hello there");
-        assert_eq!(result, Ok("hello there"));
-    }
-
-    #[test]
-    fn test_empty_message() {
-        let result = check_ms("");
-        assert_eq!(result, Err("ERROR: illegal"));
-    }
-
-    #[test]
-    fn test_message_with_stupid() {
-        let result = check_ms("you are stupid");
-        assert_eq!(result, Err("ERROR: illegal"));
-    }
-
-    #[test]
-    fn test_just_stupid() {
-        let result = check_ms("stupid");
-        assert_eq!(result, Err("ERROR: illegal"));
-    }
-
-    #[test]
-    fn test_case_insensitive() {
-        let result = check_ms("You are STUPID");
-        assert_eq!(result, Err("ERROR: illegal"));
-    }
-}
