@@ -1,9 +1,10 @@
 mod err;
+pub use err::{ParseErr, ReadErr};
 
-use err::{ParseErr, ReadErr};
-use std::{error::Error, fs, path::Path};
+use std::error::Error;
+use std::{fs::File, io::Read};
+extern crate json;
 
-/// Represents a task in the todo list.
 #[derive(Debug, Eq, PartialEq)]
 pub struct Task {
     pub id: u32,
@@ -11,7 +12,6 @@ pub struct Task {
     pub level: u32,
 }
 
-/// Represents the todo list.
 #[derive(Debug, Eq, PartialEq)]
 pub struct TodoList {
     pub title: String,
@@ -19,41 +19,71 @@ pub struct TodoList {
 }
 
 impl TodoList {
-    /// Reads and parses the todo list from the specified file path.
-    pub fn get_todo<P: AsRef<Path>>(path: P) -> Result<TodoList, Box<dyn Error>> {
-        // Read the file content
-        let content = fs::read_to_string(&path).map_err(|e| Box::new(ReadErr { child_err: Box::new(e) }) as Box<dyn Error>)?;
+    pub fn get_todo(path: &str) -> Result<TodoList, Box<dyn Error>> {
+        let file_result = File::open(path);
+        let mut file = match file_result {
+            Ok(f) => f,
+            Err(e) => {
+                let read_err = ReadErr {
+                    child_err: Box::new(e),
+                };
+                return Err(Box::new(read_err));
+            }
+        };
         
-        // Parse the JSON content
-        let parsed: serde_json::Value = serde_json::from_str(&content)
-            .map_err(|e| Box::new(ParseErr::Malformed(Box::new(e))) as Box<dyn Error>)?;
+        let mut content = String::new();
+        match file.read_to_string(&mut content) {
+            Ok(_) => {},
+            Err(e) => {
+                let read_err = ReadErr {
+                    child_err: Box::new(e),
+                };
+                return Err(Box::new(read_err));
+            }
+        }
         
-        // Extract the title
-        let title = parsed["title"].as_str()
-            .ok_or_else(|| Box::new(ParseErr::Malformed("Missing or invalid 'title' field".into())) as Box<dyn Error>)?
-            .to_string();
-        
-        // Extract tasks
-        let tasks_array = parsed["tasks"].as_array()
-            .ok_or_else(|| Box::new(ParseErr::Malformed("Missing or invalid 'tasks' field".into())) as Box<dyn Error>)?;
-        
-        if tasks_array.is_empty() {
+        if content.trim().is_empty() {
             return Err(Box::new(ParseErr::Empty));
         }
         
+        let parsed_json = match json::parse(&content) {
+            Ok(json) => json,
+            Err(e) => {
+                return Err(Box::new(ParseErr::Malformed(Box::new(e))));
+            }
+        };
+        
+        let title = match parsed_json["title"].as_str() {
+            Some(t) => t.to_string(),
+            None => return Err(Box::new(ParseErr::Empty)),
+        };
+
+        if parsed_json["tasks"].len() == 0 {
+            return Err(Box::new(ParseErr::Empty));
+        }
+
         let mut tasks = Vec::new();
-        for task in tasks_array {
-            let id = task["id"].as_u64()
-                .ok_or_else(|| Box::new(ParseErr::Malformed("Invalid or missing 'id' in task".into())) as Box<dyn Error>)?
-                as u32;
-            let description = task["description"].as_str()
-                .ok_or_else(|| Box::new(ParseErr::Malformed("Invalid or missing 'description' in task".into())) as Box<dyn Error>)?
-                .to_string();
-            let level = task["level"].as_u64()
-                .ok_or_else(|| Box::new(ParseErr::Malformed("Invalid or missing 'level' in task".into())) as Box<dyn Error>)?
-                as u32;
+        for i in 0..parsed_json["tasks"].len() {
+            let id = match parsed_json["tasks"][i]["id"].as_u32() {
+                Some(id) => id,
+                None => return Err(Box::new(ParseErr::Empty)),
+            };
             
-            tasks.push(Task { id, description, level });
+            let description = match parsed_json["tasks"][i]["description"].as_str() {
+                Some(desc) => desc.to_string(),
+                None => return Err(Box::new(ParseErr::Empty)),
+            };
+            
+            let level = match parsed_json["tasks"][i]["level"].as_u32() {
+                Some(lvl) => lvl,
+                None => return Err(Box::new(ParseErr::Empty)),
+            };
+            
+            tasks.push(Task {
+                id,
+                description,
+                level,
+            });
         }
         
         Ok(TodoList { title, tasks })
