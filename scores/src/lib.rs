@@ -18,7 +18,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn best_score() {
+    fn test_score() {
         assert_eq!(score("a"), 1);
         assert_eq!(score("ã ê Á?"), 0);
         assert_eq!(score("ThiS is A Test"), 14);
