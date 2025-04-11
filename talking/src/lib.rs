@@ -3,12 +3,14 @@ pub fn talking(text: &str) -> &str {
 
     if trimmed.is_empty() {
         "Just say something!"
-    } else if trimmed.ends_with('?') && trimmed.chars().filter(|c| c.is_ascii_alphabetic()).all(|c| c.is_ascii_uppercase()) {
-        "Quiet, I am thinking!"
+    } else if trimmed.ends_with('?') {
+        if trimmed.chars().filter(|c| c.is_ascii_alphabetic()).all(|c| c.is_ascii_uppercase()) {
+            "Quiet, I am thinking!"
+        } else {
+            "Sure."
+        }
     } else if trimmed.chars().filter(|c| c.is_ascii_alphabetic()).all(|c| c.is_ascii_uppercase()) {
         "There is no need to yell, calm down!"
-    } else if trimmed.ends_with('?') {
-        "Sure."
     } else {
         "Interesting"
     }
