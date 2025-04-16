@@ -1,5 +1,5 @@
 use ref_cell::*;
-use ref_cell::messenger::Tracker;
+use crate::messenger::Tracker;
 
 fn main() {
     // initialize the worker
