@@ -8,14 +8,15 @@ pub trait Logger {
 
 pub struct Tracker<'a, T: Logger> {
     logger: &'a T,
+    value: usize,
     max: usize,
-    // Remove the unused 'value' field
 }
 
 impl<'a, T: Logger> Tracker<'a, T> {
     pub fn new(logger: &'a T, max: usize) -> Self {
         Self {
             logger,
+            value: 0,
             max,
         }
     }
