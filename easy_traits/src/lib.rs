@@ -34,8 +34,27 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn test_append_str() {
+        let mut str_aux = StringValue {
+            value: String::from("hello"),
+        };
+        str_aux.append_str(String::from(" there!"));
+        assert_eq!(str_aux.value, "hello there!");
+    }
+    #[test]
+    fn test_append_number() {
+        let mut str_aux = StringValue {
+            value: String::from("hello"),
+        };
+        str_aux.append_number(42.0);
+        assert_eq!(str_aux.value, "hello42");
+    }
+    #[test]
+    fn test_remove_punctuation_marks() {
+        let mut str_aux = StringValue {
+            value: String::from("hello, world!"),
+        };
+        str_aux.remove_punctuation_marks();
+        assert_eq!(str_aux.value, "hello world");
     }
 }
