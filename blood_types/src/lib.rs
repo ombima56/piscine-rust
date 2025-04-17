@@ -11,7 +11,7 @@ pub enum Antigen {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
-enum RhFactor {
+pub enum RhFactor {
     Positive,
     Negative,
 }
@@ -25,7 +25,6 @@ pub struct BloodType {
 // FromStr for Antigen
 impl FromStr for Antigen {
     type Err = ();
-
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "A" => Ok(Antigen::A),
@@ -40,7 +39,6 @@ impl FromStr for Antigen {
 // FromStr for RhFactor
 impl FromStr for RhFactor {
     type Err = ();
-
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "+" => Ok(RhFactor::Positive),
@@ -53,7 +51,6 @@ impl FromStr for RhFactor {
 // FromStr for BloodType
 impl FromStr for BloodType {
     type Err = ();
-
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let len = s.len();
         let (antigen_str, rh_str) = if s.ends_with('+') || s.ends_with('-') {
@@ -61,7 +58,6 @@ impl FromStr for BloodType {
         } else {
             return Err(());
         };
-
         Ok(BloodType {
             antigen: antigen_str.parse()?,
             rh_factor: rh_str.parse()?,
@@ -102,7 +98,6 @@ impl BloodType {
             RhFactor::Positive => true,
             RhFactor::Negative => matches!(other.rh_factor, RhFactor::Negative),
         };
-
         let antigen_ok = match (&self.antigen, &other.antigen) {
             (Antigen::AB, _) => true,
             (Antigen::A, Antigen::A) | (Antigen::A, Antigen::O) => true,
@@ -110,7 +105,6 @@ impl BloodType {
             (Antigen::O, Antigen::O) => true,
             _ => false,
         };
-
         rh_ok && antigen_ok
     }
 
@@ -141,7 +135,6 @@ fn all_blood_types() -> Vec<BloodType> {
         RhFactor::Negative,
         RhFactor::Positive,
     ];
-
     let mut result = vec![];
     for ag in &antigens {
         for rh in &rh_factors {
@@ -153,7 +146,6 @@ fn all_blood_types() -> Vec<BloodType> {
     }
     result
 }
-
 
 #[cfg(test)]
 mod tests {
