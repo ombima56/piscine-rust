@@ -36,45 +36,34 @@ impl From<u32> for RomanNumber {
         if num == 0 {
             return RomanNumber(vec![Nulla]);
         }
-
+        
         let mut result = Vec::new();
-
         let table = [
-            (1000, M),
-            (900, C), (900, M), // CM
-            (500, D),
-            (400, C), (400, D), // CD
-            (100, C),
-            (90, X), (90, C),   // XC
-            (50, L),
-            (40, X), (40, L),   // XL
-            (10, X),
-            (9, I), (9, X),     // IX
-            (5, V),
-            (4, I), (4, V),     // IV
-            (1, I),
+            (1000, vec![M]),
+            (900, vec![C, M]),  // CM
+            (500, vec![D]),
+            (400, vec![C, D]),  // CD
+            (100, vec![C]),
+            (90, vec![X, C]),   // XC
+            (50, vec![L]),
+            (40, vec![X, L]),   // XL
+            (10, vec![X]),
+            (9, vec![I, X]),    // IX
+            (5, vec![V]),
+            (4, vec![I, V]),    // IV
+            (1, vec![I]),
         ];
-
-        let mut i = 0;
-        while i < table.len() {
-            let (value, digit) = table[i];
-            if num >= value {
-                // Check for subtractive pair
-                if matches!(value, 900 | 400 | 90 | 40 | 9 | 4) {
-                    result.push(digit);
-                    result.push(table[i + 1].1);
+        
+        while num > 0 {
+            for &(value, ref digits) in &table {
+                if num >= value {
+                    result.extend_from_slice(digits);
                     num -= value;
-                    i += 2;
-                } else {
-                    result.push(digit);
-                    num -= value;
-                    i += 1;
+                    break;
                 }
-            } else {
-                i += 1;
             }
         }
-
+        
         RomanNumber(result)
     }
 }
