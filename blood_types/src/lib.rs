@@ -19,7 +19,7 @@ enum RhFactor {
 #[derive(PartialEq, Eq, PartialOrd, Clone)]
 pub struct BloodType {
     pub antigen: Antigen,
-    rh_factor: RhFactor,
+    pub rh_factor: RhFactor,
 }
 
 // FromStr for Antigen
