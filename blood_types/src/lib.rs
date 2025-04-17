@@ -10,7 +10,7 @@ pub enum Antigen {
     O,
 }
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 enum RhFactor {
     Positive,
     Negative,
@@ -160,8 +160,30 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn test_blood_type_from_str() {
+        let blood_type: BloodType = "A+".parse().unwrap();
+        assert_eq!(blood_type.antigen, Antigen::A);
+        assert_eq!(blood_type.rh_factor, RhFactor::Positive);
+
+        let blood_type: BloodType = "O-".parse().unwrap();
+        assert_eq!(blood_type.antigen, Antigen::O);
+        assert_eq!(blood_type.rh_factor, RhFactor::Negative);
+
+        let blood_type: BloodType = "AB+".parse().unwrap();
+        assert_eq!(blood_type.antigen, Antigen::AB);
+        assert_eq!(blood_type.rh_factor, RhFactor::Positive);
+    }
+    #[test]
+    fn test_blood_type_can_receive_from() {
+        let blood_type_a: BloodType = "A+".parse().unwrap();
+        let blood_type_b: BloodType = "B+".parse().unwrap();
+        let blood_type_ab: BloodType = "AB+".parse().unwrap();
+        let blood_type_o: BloodType = "O-".parse().unwrap();
+
+        assert!(blood_type_a.can_receive_from(&blood_type_a));
+        assert!(!blood_type_a.can_receive_from(&blood_type_b));
+        assert!(blood_type_ab.can_receive_from(&blood_type_a));
+        assert!(blood_type_ab.can_receive_from(&blood_type_b));
+        assert!(!blood_type_o.can_receive_from(&blood_type_a));
     }
 }
