@@ -61,8 +61,35 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn test_matrix_multiplication() {
+        let matrix_a = Matrix(vec![vec![1, 2], vec![3, 4]]);
+        let matrix_b = Matrix(vec![vec![5, 6], vec![7, 8]]);
+        let result = matrix_a * matrix_b;
+
+        assert_eq!(
+            result,
+            Some(Matrix(vec![vec![19, 22], vec![43, 50]]))
+        );
+    }
+
+    #[test]
+    fn test_invalid_multiplication() {
+        let matrix_a = Matrix(vec![vec![1, 2], vec![3, 4]]);
+        let matrix_b = Matrix(vec![vec![5, 6]]);
+
+        let result = matrix_a * matrix_b;
+        assert_eq!(result, None);
+    }
+    #[test]
+    fn test_matrix_row() {
+        let matrix = Matrix(vec![vec![1, 2, 3], vec![4, 5, 6]]);
+        let row = matrix.row(1);
+        assert_eq!(row, vec![4, 5, 6]);
+    }
+    #[test]
+    fn test_matrix_col() {
+        let matrix = Matrix(vec![vec![1, 2, 3], vec![4, 5, 6]]);
+        let col = matrix.col(1);
+        assert_eq!(col, vec![2, 5]);
     }
 }
