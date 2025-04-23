@@ -28,13 +28,26 @@ mod tests {
 
     #[test]
     fn test_new() {
-        let m: Matrix<u32> = Matrix(vec![vec![0, 0, 0, 0], vec![0, 0, 0, 0], vec![0, 0, 0, 0]]);
-        println!("{:?}", m);    
+        let matrix = Matrix::<f64>::new();
+        assert_eq!(matrix, Matrix(vec![vec![0.0]]));
     }
-    
+
     #[test]
-    fn test_zero() {
-        let m: Matrix<u32> = Matrix::zero(3, 4);
-        println!("{:?}", m);
+    fn test_zero_matrix() {
+        let matrix = Matrix::<f64>::zero(2, 3);
+        assert_eq!(matrix, Matrix(vec![
+            vec![0.0, 0.0, 0.0],
+            vec![0.0, 0.0, 0.0],
+        ]));
+    }
+
+    #[test]
+    fn test_identity_matrix() {
+        let matrix = Matrix::<f64>::identity(3);
+        assert_eq!(matrix, Matrix(vec![
+            vec![1.0, 0.0, 0.0],
+            vec![0.0, 1.0, 0.0],
+            vec![0.0, 0.0, 1.0],
+        ]));
     }
 }
