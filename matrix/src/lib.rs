@@ -1,7 +1,7 @@
 mod scalar;
 use crate::scalar::Scalar;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Matrix<T>(pub Vec<Vec<T>>);
 
 impl<T: Scalar + Clone> Matrix<T> {
