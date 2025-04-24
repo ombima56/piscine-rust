@@ -81,10 +81,82 @@ impl fmt::Display for Notification {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use chrono::Duration;
 
     #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn test_notify_remainder() {
+        let event = Event::Remainder("Check the oven");
+        let notification = event.notify();
+        assert_eq!(
+            notification,
+            Notification {
+                size: 50,
+                color: (50, 50, 50),
+                position: Position::Bottom,
+                content: "Check the oven".to_string()
+            }
+        );
+    }
+
+    #[test]
+    fn test_notify_registration() {
+        let duration = Duration::seconds(49094); // 13h 38m 14s
+        let event = Event::Registration(duration);
+        let notification = event.notify();
+        assert_eq!(
+            notification,
+            Notification {
+                size: 30,
+                color: (255, 2, 22),
+                position: Position::Top,
+                content: "You have 13H:38M:14S left before the registration ends".to_string()
+            }
+        );
+    }
+
+    #[test]
+    fn test_notify_appointment() {
+        let event = Event::Appointment("Dentist appointment");
+        let notification = event.notify();
+        assert_eq!(
+            notification,
+            Notification {
+                size: 100,
+                color: (200, 200, 3),
+                position: Position::Center,
+                content: "Dentist appointment".to_string()
+            }
+        );
+    }
+
+    #[test]
+    fn test_notify_holiday() {
+        let event = Event::Holiday;
+        let notification = event.notify();
+        assert_eq!(
+            notification,
+            Notification {
+                size: 25,
+                color: (0, 255, 0),
+                position: Position::Top,
+                content: "Enjoy your holiday".to_string()
+            }
+        );
+    }
+
+    #[test]
+    fn test_display_format() {
+        let notification = Notification {
+            size: 25,
+            color: (0, 255, 0),
+            position: Position::Top,
+            content: "Enjoy your holiday".to_string(),
+        };
+
+        let display_str = format!("{}", notification);
+        assert_eq!(
+            display_str,
+            "(Top, 25, [38;2;0;255;0mEnjoy your holiday[0m)"
+        );
     }
 }
