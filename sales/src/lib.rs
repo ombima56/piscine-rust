@@ -36,17 +36,16 @@ impl Cart {
         let mut i = 0;
         
         while i + 2 < prices.len() {
-            let group = vec![prices[i], prices[i + 1], prices[i + 2]];
-            let sum: f32 = group.iter().sum();
-            let min_price = group[0];
+            let p1 = prices[i];
+            let p2 = prices[i+1];
+            let p3 = prices[i+2];
             
-            let discount_rate = min_price / sum;
+            let total = p1 + p2 + p3;
+            let discount = p1;
             
-            for &price in &group {
-                let discounted_price = price * (1.0 - discount_rate);
-                let rounded_price = ((discounted_price * 100.0).round()) / 100.0;
-                receipt.push(rounded_price);
-            }
+            receipt.push((((p1 - (p1/total) * discount) * 100.0).round()) / 100.0);
+            receipt.push((((p2 - (p2/total) * discount) * 100.0).round()) / 100.0);
+            receipt.push((((p3 - (p3/total) * discount) * 100.0).round()) / 100.0);
             
             i += 3;
         }
