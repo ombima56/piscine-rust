@@ -40,9 +40,10 @@ impl Cart {
             let sum: f32 = group.iter().sum();
             let min_price = group[0];
             
+            let discount_rate = min_price / sum;
+            
             for &price in &group {
-                let discount = (price / sum) * min_price;
-                let discounted_price = price - discount;
+                let discounted_price = price * (1.0 - discount_rate);
                 let rounded_price = ((discounted_price * 100.0).round()) / 100.0;
                 receipt.push(rounded_price);
             }
