@@ -32,31 +32,31 @@ impl Cart {
     pub fn generate_receipt(&mut self) -> Vec<f32> {
         let mut prices: Vec<f32> = self.items.iter().map(|(_, p)| *p).collect();
         prices.sort_by(|a, b| a.partial_cmp(b).unwrap());
-
         let mut receipt = Vec::new();
-
         let mut i = 0;
+        
+        // Process items in groups of 3
         while i + 2 < prices.len() {
             let group = vec![prices[i], prices[i + 1], prices[i + 2]];
             let sum: f32 = group.iter().sum();
             let min = *group.iter().min_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
-            let discount = min;
-
-            // Apply proportional discount
-            for price in group.iter() {
-                let share = price / sum;
-                let reduced = price - (share * discount);
-                receipt.push(((reduced * 100.0).round()) / 100.0);
+            
+            // Each item gets discounted proportionally
+            for &price in &group {
+                let discount = (price / sum) * min;
+                let discounted_price = price - discount;
+                receipt.push(((discounted_price * 100.0).round()) / 100.0);
             }
-
+            
             i += 3;
         }
-
+        
+        // Add remaining items without discount
         while i < prices.len() {
             receipt.push(((prices[i] * 100.0).round()) / 100.0);
             i += 1;
         }
-
+        
         receipt.sort_by(|a, b| a.partial_cmp(b).unwrap());
         self.receipt = receipt.clone();
         receipt
