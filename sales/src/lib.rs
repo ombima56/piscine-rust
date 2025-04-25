@@ -2,7 +2,6 @@
 pub struct Store {
     pub products: Vec<(String, f32)>,
 }
-
 impl Store {
     pub fn new(products: Vec<(String, f32)>) -> Store {
         Store { products }
@@ -14,7 +13,6 @@ pub struct Cart {
     pub items: Vec<(String, f32)>,
     pub receipt: Vec<f32>,
 }
-
 impl Cart {
     pub fn new() -> Cart {
         Cart {
@@ -22,36 +20,30 @@ impl Cart {
             receipt: Vec::new(),
         }
     }
-    
-    pub fn insert_item(&mut self, store: &Store, ele: String) {
-        if let Some(product) = store.products.iter().find(|(name, _)| name == &ele) {
-            self.items.push(product.clone());
+    pub fn insert_item(&mut self, s: &Store, ele: String) {
+        if let Some(product) = s.products.iter().find(|(name, _)| *name == ele) {
+            self.items.push((product.0.clone(), product.1));
         }
     }
-
     pub fn generate_receipt(&mut self) -> Vec<f32> {
-        let mut prices: Vec<f32> = self.items.iter().map(|(_, price)| *price).collect();
-        prices.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        let mut sorted_items: Vec<f32> = self.items.iter().map(|(_, price)| *price).collect();
+        sorted_items.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
-        let total_items = prices.len();
-        let free_items = total_items / 3;
+        let original_total: f32 = sorted_items.iter().sum();
+        let free_count = sorted_items.len() / 3;
+        let discount_total: f32 = sorted_items.iter().take(free_count).sum();
+        let total_after_promotion = original_total - discount_total;
 
-        let mut free_price: f32 = 0.0;
-        for _ in 0..free_items {
-            if let Some(cheapest) = prices.first() {
-                free_price += cheapest;
-            }
-            prices.remove(0);
-        }
+        let adjustment_factor = total_after_promotion / original_total;
+        let mut adjusted_prices: Vec<f32> = sorted_items
+            .iter()
+            .map(|price| (price * adjustment_factor * 100.0).round() / 100.0)
+            .collect();
 
-        let total_price: f32 = prices.iter().sum();
-        let modified_price = total_price - free_price;
+        adjusted_prices.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
-        let adjustment = (modified_price / prices.len() as f32) / 1000.0;
-
-        self.receipt = prices.iter().map(|&price| (price - adjustment).round().into()).collect();
-        self.receipt.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        self.receipt.clone()
+        self.receipt = adjusted_prices.clone();
+        adjusted_prices
     }
 }
 
