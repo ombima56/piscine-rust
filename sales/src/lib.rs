@@ -35,23 +35,21 @@ impl Cart {
         let mut receipt = Vec::new();
         let mut i = 0;
         
-        // Process items in groups of 3
         while i + 2 < prices.len() {
             let group = vec![prices[i], prices[i + 1], prices[i + 2]];
             let sum: f32 = group.iter().sum();
-            let min = *group.iter().min_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
+            let min_price = group[0];
             
-            // Each item gets discounted proportionally
             for &price in &group {
-                let discount = (price / sum) * min;
+                let discount = (price / sum) * min_price;
                 let discounted_price = price - discount;
-                receipt.push(((discounted_price * 100.0).round()) / 100.0);
+                let rounded_price = ((discounted_price * 100.0).round()) / 100.0;
+                receipt.push(rounded_price);
             }
             
             i += 3;
         }
         
-        // Add remaining items without discount
         while i < prices.len() {
             receipt.push(((prices[i] * 100.0).round()) / 100.0);
             i += 1;
