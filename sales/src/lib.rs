@@ -33,28 +33,28 @@ impl Cart {
         let mut prices: Vec<f32> = self.items.iter().map(|(_, p)| *p).collect();
         prices.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
-        let mut receipt = vec![0.0; prices.len()];
+        let mut receipt = Vec::new();
+
         let mut i = 0;
-
         while i + 2 < prices.len() {
-            // Take 3 items at a time
-            let group = &prices[i..i + 3];
+            let group = vec![prices[i], prices[i + 1], prices[i + 2]];
             let sum: f32 = group.iter().sum();
-            let min = group.iter().cloned().fold(f32::INFINITY, f32::min);
+            let min = *group.iter().min_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
+            let discount = min;
 
-            // Calculate ratio for each to apply the discount
-            for j in 0..3 {
-                let ratio = group[j] / sum;
-                let new_price = (group[j] - ratio * min * 1.0001) * 100.0;
-                receipt[i + j] = (new_price.round()) / 100.0;
+            // Apply proportional discount
+            for price in group.iter() {
+                let share = price / sum;
+                let reduced = price - (share * discount);
+                receipt.push(((reduced * 100.0).round()) / 100.0);
             }
 
             i += 3;
         }
 
-        // Handle the remaining items (less than 3)
-        for k in i..prices.len() {
-            receipt[k] = (prices[k] * 100.0).round() / 100.0;
+        while i < prices.len() {
+            receipt.push(((prices[i] * 100.0).round()) / 100.0);
+            i += 1;
         }
 
         receipt.sort_by(|a, b| a.partial_cmp(b).unwrap());
