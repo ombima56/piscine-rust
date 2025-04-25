@@ -1,4 +1,8 @@
 pub fn get_products(arr: Vec<usize>) -> Vec<usize> {
+    if arr.len() <= 1 {
+        return vec![];
+    }
+
     let mut result = vec![1; arr.len()];
 
     let mut left_product = 1;
@@ -14,7 +18,6 @@ pub fn get_products(arr: Vec<usize>) -> Vec<usize> {
     }
 
     result
-
 }
 
 #[cfg(test)]
