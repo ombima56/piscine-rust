@@ -42,10 +42,11 @@ impl Cart {
             
             let total = p1 + p2 + p3;
             let discount = p1;
+            let discount_factor = 1.0 - (discount / total);
             
-            receipt.push((((p1 - (p1/total) * discount) * 100.0).round()) / 100.0);
-            receipt.push((((p2 - (p2/total) * discount) * 100.0).round()) / 100.0);
-            receipt.push((((p3 - (p3/total) * discount) * 100.0).round()) / 100.0);
+            receipt.push(((p1 * discount_factor * 100.0).round()) / 100.0);
+            receipt.push(((p2 * discount_factor * 100.0).round()) / 100.0);
+            receipt.push(((p3 * discount_factor * 100.0).round()) / 100.0);
             
             i += 3;
         }
