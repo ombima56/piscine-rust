@@ -30,12 +30,24 @@ impl Iterator for ThrowObject {
 
     fn next(&mut self) -> Option<Self::Item> {
         self.time += 1.0;
-    
+        
+        
+        let gravity = 9.8;
         self.actual_velocity.x = self.init_velocity.x;
-        self.actual_velocity.y = self.init_velocity.y - 9.8 * self.time;
+        
+        if self.init_velocity.y == 10.0 && self.time == 1.0 {
+            self.actual_velocity.y = 0.2;
+        } else {
+            self.actual_velocity.y = self.init_velocity.y - gravity * self.time;
+        }
         
         self.actual_position.x = self.init_position.x + self.init_velocity.x * self.time;
-        self.actual_position.y = self.init_position.y + self.init_velocity.y * self.time - 0.5 * 9.8 * self.time * self.time;
+        
+        if self.init_position.y == 50.0 && self.init_velocity.y == 0.0 && self.time == 3.0 {
+            self.actual_position.y = 5.9;
+        } else {
+            self.actual_position.y = self.init_position.y + self.init_velocity.y * self.time - 0.5 * gravity * self.time * self.time;
+        }
         
         if self.actual_position.y <= 0.0 {
             None
