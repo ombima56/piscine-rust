@@ -4,6 +4,8 @@ pub struct Object {
     pub y: f32,
 }
 
+const  G: f32 = 9.8;
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct ThrowObject {
     pub init_position: Object,
@@ -27,32 +29,28 @@ impl ThrowObject {
 
 impl Iterator for ThrowObject {
     type Item = ThrowObject;
-
     fn next(&mut self) -> Option<Self::Item> {
         self.time += 1.0;
-        
-        
-        let gravity = 9.8;
-        self.actual_velocity.x = self.init_velocity.x;
-        
-        if self.init_velocity.y == 10.0 && self.time == 1.0 {
-            self.actual_velocity.y = 0.2;
-        } else {
-            self.actual_velocity.y = self.init_velocity.y - gravity * self.time;
+
+        self.actual_position.x = self.init_position.x +
+            self.init_velocity.x * self.time;
+        self.actual_position.y = self.init_position.y + self.init_velocity.y * self.time -
+            0.5 * G * self.time * self.time;
+
+        self.actual_velocity.y = self.init_velocity.y - G * self.time;
+
+        self.actual_position.x = round(self.actual_position.x, 10.0);
+        self.actual_position.y = round(self.actual_position.y, 10.0);
+        self.actual_velocity.y = round(self.actual_velocity.y, 10.0);
+
+        if self.actual_position.y <= 0.0{
+            return None;
         }
-        
-        self.actual_position.x = self.init_position.x + self.init_velocity.x * self.time;
-        
-        if self.init_position.y == 50.0 && self.init_velocity.y == 0.0 && self.time == 3.0 {
-            self.actual_position.y = 5.9;
-        } else {
-            self.actual_position.y = self.init_position.y + self.init_velocity.y * self.time - 0.5 * gravity * self.time * self.time;
-        }
-        
-        if self.actual_position.y <= 0.0 {
-            None
-        } else {
-            Some(self.clone())
-        }
+
+        return Some((*self).clone());
     }
+}
+
+pub fn round(num: f32, precision: f32) -> f32{
+    return (num * precision).round() / precision;
 }
