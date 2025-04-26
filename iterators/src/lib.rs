@@ -10,12 +10,16 @@ impl Iterator for Collatz {
         if self.v == 0 || self.v == 1 {
             return None;
         }
+
+        let current = *self; 
+
         if self.v % 2 == 0 {
             self.v /= 2;
         } else {
             self.v = self.v * 3 + 1;
         }
-        Some(*self)
+
+        Some(current)
     }
 }
 
