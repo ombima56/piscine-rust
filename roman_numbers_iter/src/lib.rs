@@ -1,7 +1,7 @@
 #[derive(Debug, Clone, PartialEq)]
 pub struct RomanNumber(pub Vec<RomanDigit>);
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum RomanDigit {
     I,
     V,
